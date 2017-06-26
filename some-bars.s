@@ -634,3 +634,4 @@ jump_table:
 
 function_table:
 	.incbin "table.bin"
+	

@@ -8,7 +8,7 @@ int main()
 
 	for(int i = 0; i < 256; ++i)
 	{
-		unsigned char f = std::sin(i / 64.0 * PI) * 32.0 + 48.0;
-		file.write((char*)&f, 1);
+		char f = std::sin(i / 64.0 * PI) * 32.0 + 48.0;
+		file.put(f);
 	}
 }
