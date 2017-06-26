@@ -98,8 +98,7 @@
 	set 2,(hl)
 	set 1,(hl)
 	res 0,(hl)
-	ld bc,$000f
-	add hl,bc
+	ld hl,tile_address+$10
 	res 7,(hl)
 	inc hl
 	set 7,(hl)
@@ -113,8 +112,7 @@
 	inc hl
 	set 1,(hl)
 	set 0,(hl)
-	ld bc,$000f
-	add hl,bc
+	ld hl,tile_address+$10
 	set 7,(hl)
 	res 6,(hl)
 	inc hl
@@ -128,8 +126,7 @@
 	set 0,(hl)
 	inc hl
 	set 0,(hl)
-	ld bc,$000f
-	add hl,bc
+	ld hl,tile_address+$10
 	res 7,(hl)
 	set 6,(hl) 
 	res 5,(hl)
@@ -141,12 +138,10 @@
 .endm
 
 .org $0040
-	call vblank
-	reti
+	jp vblank
 
 .org $0048
-	call hblank
-	reti
+	jp hblank
 
 .org $0100
 	nop
@@ -209,7 +204,17 @@ vblank:
 	ld b,$00
 	ld c,d
 	add hl,bc
-	ld c,(hl)
+	ld e,(hl)
+	ld hl,function_table
+	ld a,d
+	add d
+	rlca
+	ld c,a
+	add hl,bc
+	ld a,(hl)
+	sra a
+	add e
+	ld c,a
 	sla c
 	jp nc,+
 	ld b,$01
@@ -220,7 +225,7 @@ vblank:
 	ld l,a
 	ld h,b
 
-	ret
+	reti
 
 hblank:
 	jp hl
@@ -237,7 +242,16 @@ hblank_end:
 	add d
 	ld c,a
 	add hl,bc
-	ld c,(hl)
+	ld e,(hl)
+	ld hl,function_table
+	add d
+	rlca
+	ld c,a
+	add hl,bc
+	ld a,(hl)
+	sra a
+	add e
+	ld c,a
 	sla c
 	jp nc,+
 	ld b,$01
@@ -248,7 +262,7 @@ hblank_end:
 	ld l,a
 	ld h,b
 
-	ret
+	reti
 
 clean_line:
 	ld hl,$8000
@@ -605,6 +619,18 @@ jump_table:
 	.dw jump136 jump137 jump138 jump139 jump140 jump141 jump142 jump143
 	.dw jump144 jump145 jump146 jump147 jump148 jump149 jump150 jump151
 	.dw jump152 jump153 jump154 jump155 jump156 jump157 jump158 jump159
+	.dw hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end
+	.dw hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end
+	.dw hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end
+	.dw hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end
+	.dw hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end
+	.dw hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end
+	.dw hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end
+	.dw hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end
+	.dw hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end
+	.dw hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end
+	.dw hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end
+	.dw hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end
 
 function_table:
 	.incbin "table.bin"
