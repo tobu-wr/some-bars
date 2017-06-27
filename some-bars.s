@@ -212,7 +212,7 @@ vblank:
 	ld c,a
 	add hl,bc
 	ld a,(hl)
-	sra a
+	srl a
 	add e
 	ld c,a
 	sla c
@@ -248,7 +248,7 @@ hblank_end:
 	ld c,a
 	add hl,bc
 	ld a,(hl)
-	sra a
+	srl a
 	add e
 	ld c,a
 	sla c
