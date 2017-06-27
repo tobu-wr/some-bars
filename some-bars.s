@@ -217,13 +217,12 @@ vblank:
 	ld c,a
 	sla c
 	jp nc,+
-	ld b,$01
+	inc b
 +	ld hl,jump_table
 	add hl,bc
 	ld a,(hl+)
-	ld b,(hl)
+	ld h,(hl)
 	ld l,a
-	ld h,b
 
 	reti
 
@@ -254,13 +253,12 @@ hblank_end:
 	ld c,a
 	sla c
 	jp nc,+
-	ld b,$01
+	inc b
 +	ld hl,jump_table
 	add hl,bc
 	ld a,(hl+)
-	ld b,(hl)
+	ld h,(hl)
 	ld l,a
-	ld h,b
 
 	reti
 
@@ -634,4 +632,4 @@ jump_table:
 
 function_table:
 	.incbin "table.bin"
-	
+
