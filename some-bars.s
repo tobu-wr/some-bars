@@ -149,9 +149,8 @@
 
 .org $0150
 start:
-	; disable LCD
-	ld hl,lcdc_address
-	res 7,(hl)
+	; disable interrupts
+	di
 
 	; init background palette
 	ld a,$93
@@ -159,64 +158,70 @@ start:
 
 	; init background data
 	ld hl,$9800
-	ld a,$00
--		ld (hl),a
-		inc hl
+	xor a
+-		ld (hl+),a
 		inc a
 		cp $14
-		jp nz,-
-
-	; clean first pixel line
-	call clean_line
+		jr nz,-
 
 	; enable hblank and vblank interrupts
+	xor a
+	ld (if_address),a
 	ld a,$08
 	ld (stat_address),a
-	ld a,$00
-	ld (if_address),a
 	ld a,$03
 	ld (ie_address),a  
 	ei
 
-	; enable LCD
-	ld hl,lcdc_address
-	set 7,(hl)
-
-	; prepare first hblank
+	; prepare first hblank jump
 	ld hl,hblank_end
 
 main_loop:
-	jp main_loop
+	jr main_loop
 
 vblank:
-	; clean first pixel line
-	call clean_line
-
 	; reset scy register
-	ld a,$00
+	xor a
 	ld (scy_address),a
+
+	; clean first pixel line
+	ld hl,$8000
+	ld bc,$000f
+-		ld (hl),$00
+		inc hl
+		ld (hl),$00
+		add hl,bc
+		inc a
+		cp $14
+		jr nz,-
 
 	; increment d for the next frame
 	inc d
 
-	; prepare next hblank
-	ld hl,function_table
+	; first sine curve
+	ld hl,sine_table
 	ld b,$00
 	ld c,d
 	add hl,bc
-	ld e,(hl)
-	ld hl,function_table
+	ld e,(hl) ; save
+
+	; second sine curve
+	ld hl,sine_table
 	ld a,d
 	add d
-	rlca
+	rlca ; frequency * 2
 	ld c,a
 	add hl,bc
 	ld a,(hl)
-	srl a
+	srl a ; amplitude / 2
+
+	; add sine curves
 	add e
+
+	; prepare next hblank jump
 	ld c,a
 	sla c
-	jp nc,+
+	jr nc,+
 	inc b
 +	ld hl,jump_table
 	add hl,bc
@@ -234,25 +239,31 @@ hblank_end:
 	ld hl,scy_address
 	dec (hl)
 
-	; prepare next hblank
-	ld hl,function_table
+	; first sine curve
+	ld hl,sine_table
 	ld b,$00
 	ld a,(ly_address)
 	add d
 	ld c,a
 	add hl,bc
-	ld e,(hl)
-	ld hl,function_table
+	ld e,(hl) ; save
+
+	; second sine curve
+	ld hl,sine_table
 	add d
-	rlca
+	rlca ; frequency * 2
 	ld c,a
 	add hl,bc
 	ld a,(hl)
-	srl a
+	srl a ; amplitude / 2
+
+	; add sine curves
 	add e
+
+	; prepare next hblank jump
 	ld c,a
 	sla c
-	jp nc,+
+	jr nc,+
 	inc b
 +	ld hl,jump_table
 	add hl,bc
@@ -261,19 +272,6 @@ hblank_end:
 	ld l,a
 
 	reti
-
-clean_line:
-	ld hl,$8000
-	ld bc,$000f
-	ld a,$00
--		ld (hl),$00
-		inc hl
-		ld (hl),$00
-		add hl,bc
-		inc a
-		cp $14
-		jp nz,-
-	ret
 
 jump0:
 	set_pixel0 $8000
@@ -630,6 +628,6 @@ jump_table:
 	.dw hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end
 	.dw hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end hblank_end
 
-function_table:
-	.incbin "table.bin"
+sine_table:
+	.incbin "sine_table.bin"
 
