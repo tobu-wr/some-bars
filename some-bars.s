@@ -149,8 +149,9 @@
 
 .org $0150
 start:
-	; disable interrupts
-	di
+	; disable LCD
+	ld hl,lcdc_address
+	res 7,(hl)
 
 	; init background palette
 	ld a,$93
@@ -172,6 +173,10 @@ start:
 	ld a,$03
 	ld (ie_address),a  
 	ei
+
+	; enable LCD
+	ld hl,lcdc_address
+	set 7,(hl)
 
 	; prepare first hblank jump
 	ld hl,hblank_end
