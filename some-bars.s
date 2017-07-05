@@ -155,7 +155,7 @@ start:
 
 	; init background palette
 	ld a,$93
-	ld (bgp_address),a
+	ldh (<bgp_address),a
 
 	; init background data
 	ld hl,$9800
@@ -167,11 +167,11 @@ start:
 
 	; enable hblank and vblank interrupts
 	xor a
-	ld (if_address),a
+	ldh (<if_address),a
 	ld a,$08
-	ld (stat_address),a
+	ldh (<stat_address),a
 	ld a,$03
-	ld (ie_address),a  
+	ldh (<ie_address),a  
 	ei
 
 	; enable LCD
@@ -187,7 +187,7 @@ main_loop:
 vblank:
 	; reset scy register
 	xor a
-	ld (scy_address),a
+	ldh (<scy_address),a
 
 	; clean first pixel line
 	ld hl,$8000
@@ -247,7 +247,7 @@ hblank_end:
 	; first sine curve
 	ld hl,sine_table
 	ld b,$00
-	ld a,(ly_address)
+	ldh a,(<ly_address)
 	add d
 	ld c,a
 	add hl,bc
