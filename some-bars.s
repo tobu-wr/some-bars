@@ -149,9 +149,10 @@
 
 .org $0150
 start:
-	; disable LCD
-	ld hl,lcdc_address
-	res 7,(hl)
+	; wait for ly = 144 (beginning of vblank)
+-	ldh a,(<ly_address)
+	cp $90
+	jr nz,-
 
 	; init background palette
 	ld a,$93
@@ -173,10 +174,6 @@ start:
 	ld a,$03
 	ldh (<ie_address),a  
 	ei
-
-	; enable LCD
-	ld hl,lcdc_address
-	set 7,(hl)
 
 	; prepare first hblank jump
 	ld hl,hblank_end
