@@ -1,4 +1,4 @@
-# some-bars
-Experiment with Kefrens bars in GameBoy assembly
+# gameboy-playground
+Experiment with GameBoy assembly
 
-![](screenshot.png)
+![](kefrens-bars/screenshot.png)

@@ -11,13 +11,7 @@
 .rombanksize $4000
 .rombanks 2
 
-.define if_address $ff0f
-.define lcdc_address $ff40
-.define stat_address $ff41
-.define scy_address $ff42
-.define ly_address $ff44
-.define bgp_address $ff47
-.define ie_address $ffff
+.include "../common/registers.s"
 
 .macro set_pixel0 args tile_address
 	ld hl,tile_address
