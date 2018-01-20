@@ -1,17 +1,4 @@
-.gbheader
-	nintendologo
-.endgb
-
-.memorymap
-	slotsize $4000
-	defaultslot 0
-	slot 0 $0000
-.endme
-
-.rombanksize $4000
-.rombanks 2
-
-.include "../common/registers.s"
+.include "../common/common.s"
 
 .macro set_pixel0 args tile_address
 	ld hl,tile_address
