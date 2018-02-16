@@ -1,4 +1,4 @@
-.include "../common/common.s"
+.include "../common.s"
 
 .org $0100
 	nop

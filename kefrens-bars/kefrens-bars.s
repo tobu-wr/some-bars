@@ -1,4 +1,4 @@
-.include "../common/common.s"
+.include "../common.s"
 
 .macro set_pixel0 args tile_address
 	ld hl,tile_address
