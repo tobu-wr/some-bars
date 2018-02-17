@@ -20,11 +20,16 @@
 .define bgp_address $ff47
 .define ie_address $ffff
 
-.macro disable_lcd
-	; wait for vblank
+.macro wait_vblank
+	; wait for LY = 144
 -	ldh a,(<ly_address)
 	cp $90
 	jr nz,-
+.endm
+
+.macro disable_lcd
+	; lcd should be turn off during vblank in dmg
+	wait_vblank
 
 	; turn off lcd
 	ld hl,lcdc_address
@@ -37,7 +42,11 @@
 .endm
 
 .macro write_to_register args register_address value
-	ld a,value
+	.if value == 0
+		xor a
+	.else
+		ld a,value
+	.endif
 	ldh (<register_address),a
 .endm
 

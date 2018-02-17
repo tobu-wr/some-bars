@@ -130,16 +130,12 @@
 
 .org $0150
 start:
-	; wait for ly = 144 (beginning of vblank)
--	ldh a,(<ly_address)
-	cp $90
-	jr nz,-
+	wait_vblank
 
 	; init background palette
-	ld a,$93
-	ldh (<bgp_address),a
+	write_to_register bgp_address $93
 
-	; init background data
+	; init background code area
 	ld hl,$9800
 	xor a
 -		ld (hl+),a
@@ -148,12 +144,9 @@ start:
 		jr nz,-
 
 	; enable hblank and vblank interrupts
-	xor a
-	ldh (<if_address),a
-	ld a,$08
-	ldh (<stat_address),a
-	ld a,$03
-	ldh (<ie_address),a  
+	write_to_register if_address $00
+	write_to_register stat_address $08
+	write_to_register ie_address $03
 	ei
 
 	; prepare first hblank jump
@@ -164,8 +157,7 @@ main_loop:
 
 vblank:
 	; reset scy register
-	xor a
-	ldh (<scy_address),a
+	write_to_register scy_address $00
 
 	; clean first pixel line
 	ld hl,$8000
