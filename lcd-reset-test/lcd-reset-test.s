@@ -9,12 +9,7 @@ start:
 	disable_lcd
 
 	; reset background code area
-	ld hl,$9800
--		xor a
-		ld (hl+),a
-		ld a,h
-		cp $9c
-		jr nz,-
+	memset $9800 $00 $0400
 
 	; set background character data
 	memcpy $8010 character_datas $80

@@ -44,12 +44,30 @@
 .macro memcpy args destination source size
 	ld hl,source
 	ld bc,destination
-	ld d,$00 ; counter
+	ld de,$0000 ; counter
 -		ld a,(hl+)
 		ld (bc),a
 		inc bc
-		inc d
+		inc de
 		ld a,d
-		cp size
+		cp >size
+		jr nz,-
+		ld a,e
+		cp <size
+		jr nz,-
+.endm
+
+.macro memset args destination value size
+	ld hl,destination
+	ld bc,size
+	ld de,$0000; counter
+-		ld (hl),value
+		inc hl
+		inc de
+		ld a,d
+		cp b
+		jr nz,-
+		ld a,e
+		cp c
 		jr nz,-
 .endm
