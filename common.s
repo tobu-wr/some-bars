@@ -41,7 +41,7 @@
 	set 7,(hl)
 .endm
 
-.macro write_to_register args register_address value
+.macro set_register args register_address value
 	.if value == 0
 		xor a
 	.else

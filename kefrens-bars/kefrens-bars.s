@@ -133,7 +133,7 @@ start:
 	wait_vblank
 
 	; init background palette
-	write_to_register bgp_address $93
+	set_register bgp_address $93
 
 	; init background code area
 	ld hl,$9800
@@ -144,9 +144,9 @@ start:
 		jr nz,-
 
 	; enable hblank and vblank interrupts
-	write_to_register if_address $00
-	write_to_register stat_address $08
-	write_to_register ie_address $03
+	set_register if_address $00
+	set_register stat_address $08
+	set_register ie_address $03
 	ei
 
 	; prepare first hblank jump
@@ -157,7 +157,7 @@ main_loop:
 
 vblank:
 	; reset scy register
-	write_to_register scy_address $00
+	set_register scy_address $00
 
 	; clean first pixel line
 	ld hl,$8000
