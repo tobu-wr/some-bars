@@ -27,6 +27,7 @@
 	jr nz,-
 .endm
 
+; don't disable lcd when it's already disabled
 .macro disable_lcd
 	; lcd should be turn off during vblank in dmg
 	wait_vblank

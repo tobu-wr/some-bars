@@ -20,19 +20,19 @@ start:
 	jp nz,fail
 
 	; check mode (should be 0 ie hblank mode)
-	ld hl,stat_address
-	bit 0,(hl)
+	ldh a,(<stat_address)
+	bit 0,a
 	jp nz,fail
-	bit 1,(hl)
+	bit 1,a
 	jp nz,fail
 
 	enable_lcd
 
 	; check mode (should still be 0 ie hblank mode)
-	ld hl,stat_address
-	bit 0,(hl)
+	ldh a,(<stat_address)
+	bit 0,a
 	jp nz,fail
-	bit 1,(hl)
+	bit 1,a
 	jp nz,fail
 
 	disable_lcd
@@ -47,10 +47,15 @@ done:
 -	jp -
 
 fail:
+	; check if lcd is already off
+	ld hl,lcdc_address
+	bit 7,(hl)
+	jr z,+
+
 	disable_lcd
 
 	; print "fail" (set background code area)
-	memcpy $9821 fail_string $04
++	memcpy $9821 fail_string $04
 
 	jp done
 
