@@ -1,21 +1,5 @@
 .include "../common.s"
 
-.macro disable_lcd
-	; wait for vblank
--	ldh a,(<ly_address)
-	cp $90
-	jr nz,-
-
-	; turn off lcd
-	ld hl,lcdc_address
-	res 7,(hl)
-.endm
-
-.macro enable_lcd
-	ld hl,lcdc_address
-	set 7,(hl)
-.endm
-
 .org $0100
 	nop
 	jp start
@@ -33,20 +17,7 @@ start:
 		jr nz,-
 
 	; set background character data
-	ld hl,characters
-	ld bc,$8010
--		ld a,(hl+)
-		ld (bc),a
-		inc bc
-		ld a,c
-		cp $90
-		jr nz,-
-
-	; center (almost)
-	ld a,$d8
-	ldh (<scx_address),a
-	ld a,$be
-	ldh (<scy_address),a
+	memcpy $8010 character_datas $80
 
 	; check ly (should be 0)
 	ldh a,(<ly_address)
@@ -72,19 +43,7 @@ start:
 	disable_lcd
 
 	; print "success" (set background code area)
-	ld hl,$9800
-	ld a,$01
-	ld (hl+),a ; s
-	ld a,$02
-	ld (hl+),a  ; u
-	ld a,$03
-	ld (hl+),a  ; c
-	ld (hl+),a  ; c
-	ld a,$04
-	ld (hl+),a  ; e
-	ld a,$01
-	ld (hl+),a  ; s
-	ld (hl+),a  ; s
+	memcpy $9821 success_string $07
 
 done:
 	enable_lcd
@@ -96,19 +55,17 @@ fail:
 	disable_lcd
 
 	; print "fail" (set background code area)
-	ld hl,$9800
-	ld a,$05
-	ld (hl+),a ; f
-	ld a,$06
-	ld (hl+),a  ; a
-	ld a,$07
-	ld (hl+),a  ; i
-	ld a,$08
-	ld (hl+),a  ; l
+	memcpy $9821 fail_string $04
 
 	jp done
 
-characters:
+success_string:
+	.db $01 $02 $03 $03 $04 $01 $01
+
+fail_string:
+	.db $05 $06 $07 $08
+
+character_datas:
 	; s
 	.db $00 $00
 	.db $fc $fc
