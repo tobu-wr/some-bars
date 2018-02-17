@@ -1,5 +1,15 @@
 .include "../common.s"
 
+.enum $c000
+	irq_triggered db
+.ende
+
+; stat interrupt
+.org $0048
+	ld a,$01
+	ld (irq_triggered),a
+	ret
+
 .org $0100
 	nop
 	jp start
@@ -8,6 +18,18 @@
 start:
 	; lyc = 0
 	set_register lyc_address $00
+
+	; ly = 144
+	wait_vblank
+
+	; reset irq_triggered
+	xor a
+	ld (irq_triggered),a
+
+	; enable ly=lyc interrupt
+	set_register stat_address $40
+	set_register ie_address $02
+	ei
 
 	disable_lcd
 
@@ -34,6 +56,11 @@ start:
 	bit 2,a
 	jp nz,fail
 
+	; check ly=lyc interrupt (shouldn't be triggered)
+	ld a,(irq_triggered)
+	cp $00
+	jp nz,fail
+
 	enable_lcd
 
 	; check mode (should still be 0 ie hblank mode)
@@ -47,6 +74,35 @@ start:
 	ldh a,(<stat_address)
 	bit 2,a
 	jp z,fail
+
+	; check ly=lyc interrupt (should be triggered)
+	ld a,(irq_triggered)
+	cp $01
+	jp nz,fail
+
+	wait_vblank
+
+	; reset irq_triggered
+	xor a
+	ld (irq_triggered),a
+
+	; enable hblank interrupt
+	set_register stat_address $08
+	ei
+
+	disable_lcd
+
+	; check hblank interrupt (shouldn't be triggered)
+	ld a,(irq_triggered)
+	cp $00
+	jp nz,fail
+
+	enable_lcd
+
+	; recheck hblank interrupt (shouldn't be triggered)
+	ld a,(irq_triggered)
+	cp $00
+	jp nz,fail
 
 	disable_lcd
 

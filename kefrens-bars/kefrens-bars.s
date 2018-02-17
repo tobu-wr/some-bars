@@ -144,7 +144,6 @@ start:
 		jr nz,-
 
 	; enable hblank and vblank interrupts
-	set_register if_address $00
 	set_register stat_address $08
 	set_register ie_address $03
 	ei
