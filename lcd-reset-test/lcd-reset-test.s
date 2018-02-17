@@ -6,6 +6,9 @@
 
 .org $0150
 start:
+	; lyc = 0
+	set_register lyc_address $00
+
 	disable_lcd
 
 	; reset background code area
@@ -26,6 +29,11 @@ start:
 	bit 1,a
 	jp nz,fail
 
+	; check match flag (should be 0)
+	ldh a,(<stat_address)
+	bit 2,a
+	jp nz,fail
+
 	enable_lcd
 
 	; check mode (should still be 0 ie hblank mode)
@@ -34,6 +42,11 @@ start:
 	jp nz,fail
 	bit 1,a
 	jp nz,fail
+
+	; check match flag (should be 1)
+	ldh a,(<stat_address)
+	bit 2,a
+	jp z,fail
 
 	disable_lcd
 

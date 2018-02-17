@@ -17,6 +17,7 @@
 .define scy_address $ff42
 .define scx_address $ff43
 .define ly_address $ff44
+.define lyc_address $ff45
 .define bgp_address $ff47
 .define ie_address $ffff
 
