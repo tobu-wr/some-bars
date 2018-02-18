@@ -1,1 +1,0 @@
-![](kefrens-bars/screenshot.png)
