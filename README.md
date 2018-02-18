@@ -1,3 +1,3 @@
-# gameboy-playground
+# gameboy-laboratory
 
 ![](kefrens-bars/screenshot.png)
