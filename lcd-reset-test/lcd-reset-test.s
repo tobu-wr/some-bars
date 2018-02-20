@@ -20,7 +20,7 @@ start:
 	set_register lyc_address $00
 
 	; ly = 144
-	wait_vblank
+	wait_next_vblank
 
 	; reset irq_triggered
 	xor a
@@ -80,7 +80,7 @@ start:
 	cp $01
 	jp nz,fail
 
-	wait_vblank
+	wait_next_vblank
 
 	; reset irq_triggered
 	xor a
@@ -104,14 +104,12 @@ start:
 	cp $00
 	jp nz,fail
 
-	disable_lcd
+	wait_next_vblank
 
 	; print "success" (set background code area)
 	memcpy $9821 success_string $07
 
 done:
-	enable_lcd
-
 	; pause
 -	jp -
 
@@ -121,10 +119,12 @@ fail:
 	bit 7,(hl)
 	jr z,+
 
-	disable_lcd
+	wait_next_vblank
 
 	; print "fail" (set background code area)
 +	memcpy $9821 fail_string $04
+
+	enable_lcd
 
 	jp done
 

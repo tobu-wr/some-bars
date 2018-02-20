@@ -130,7 +130,7 @@
 
 .org $0150
 start:
-	wait_vblank
+	wait_next_vblank
 
 	; init background palette
 	set_register bgp_address $93

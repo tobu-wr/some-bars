@@ -21,19 +21,15 @@
 .define bgp_address $ff47
 .define ie_address $ffff
 
-.macro wait_vblank
+.macro wait_next_vblank
 	; wait for LY = 144
 -	ldh a,(<ly_address)
 	cp $90
 	jr nz,-
 .endm
 
-; don't disable lcd when it's already disabled
+; lcd should be turn off during vblank in dmg
 .macro disable_lcd
-	; lcd should be turn off during vblank in dmg
-	wait_vblank
-
-	; turn off lcd
 	ld hl,lcdc_address
 	res 7,(hl)
 .endm
