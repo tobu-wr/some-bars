@@ -66,15 +66,14 @@
 
 .macro memset args destination value size
 	ld hl,destination
-	ld bc,size
-	ld de,$0000; counter
+	ld de,$0000 ; counter
 -		ld (hl),value
 		inc hl
 		inc de
 		ld a,d
-		cp b
+		cp >size
 		jr nz,-
 		ld a,e
-		cp c
+		cp <size
 		jr nz,-
 .endm
