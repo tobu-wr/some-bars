@@ -8,7 +8,7 @@
 .org $0048
 	ld a,$01
 	ld (irq_triggered),a
-	ret
+	reti
 
 .org $0100
 	nop
@@ -88,9 +88,11 @@ start:
 
 	; enable hblank interrupt
 	set_register stat_address $08
-	ei
 
 	disable_lcd
+
+	; delay
+	nop
 
 	; check hblank interrupt (shouldn't be triggered)
 	ld a,(irq_triggered)
@@ -98,6 +100,9 @@ start:
 	jp nz,fail
 
 	enable_lcd
+
+	; delay
+	nop
 
 	; recheck hblank interrupt (shouldn't be triggered)
 	ld a,(irq_triggered)
