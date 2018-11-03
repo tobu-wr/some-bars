@@ -1,5 +1,3 @@
-CXX=g++
-
 all: lcd-reset.gb
 
 lcd-reset.gb: lcd-reset.o
