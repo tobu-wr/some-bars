@@ -10,12 +10,7 @@
 	ld (irq_triggered),a
 	reti
 
-.org $0100
-	nop
-	jp start
-
 .org $0150
-start:
 	; lyc = 0
 	set_register lyc_address $00
 

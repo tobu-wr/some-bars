@@ -85,3 +85,7 @@
 		cp <size
 		jr nz,-
 .endm
+
+.org $0100
+	nop
+	jp $0150

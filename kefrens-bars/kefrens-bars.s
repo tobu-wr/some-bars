@@ -124,12 +124,7 @@
 .org $0048
 	jp hblank
 
-.org $0100
-	nop
-	jp start
-
 .org $0150
-start:
 	wait_next_vblank
 
 	; init background palette

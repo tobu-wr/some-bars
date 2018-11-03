@@ -2,12 +2,7 @@
 
 .romgbconly
 
-.org $0100
-	nop
-	jp start
-
 .org $0150
-start:
 	disable_lcd
 
 	; set background palettes
