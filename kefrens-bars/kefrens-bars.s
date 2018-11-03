@@ -156,7 +156,7 @@ main_loop:
 
 vblank:
 	; reset scy register
-	set_register scy_address $00
+	reset_register scy_address
 
 	; clean first pixel line
 	ld hl,$8000

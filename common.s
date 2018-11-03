@@ -44,6 +44,11 @@
 	set 7,(hl)
 .endm
 
+.macro reset_register args register_address
+	xor a
+	ldh (<register_address),a
+.endm
+
 .macro set_register args register_address value
 	ld a,value
 	ldh (<register_address),a
