@@ -24,6 +24,8 @@
 .define hdma3_address $ff53
 .define hdma4_address $ff54
 .define hdma5_address $ff55
+.define bcps_address $ff68
+.define bcpd_address $ff69
 .define ie_address $ffff
 
 .macro wait_next_vblank
