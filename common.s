@@ -19,6 +19,11 @@
 .define ly_address $ff44
 .define lyc_address $ff45
 .define bgp_address $ff47
+.define hdma1_address $ff51
+.define hdma2_address $ff52
+.define hdma3_address $ff53
+.define hdma4_address $ff54
+.define hdma5_address $ff55
 .define ie_address $ffff
 
 .macro wait_next_vblank
@@ -40,11 +45,7 @@
 .endm
 
 .macro set_register args register_address value
-	.if value == 0
-		xor a
-	.else
-		ld a,value
-	.endif
+	ld a,value
 	ldh (<register_address),a
 .endm
 
