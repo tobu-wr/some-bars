@@ -8,7 +8,6 @@
 	; set background palettes
 	set_register bcps_address $86
 	reset_register bcpd_address
-	reset_register bcpd_address
 
 	; reset background code area
 	memset $9800 $00 $0400
