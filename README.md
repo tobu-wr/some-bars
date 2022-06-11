@@ -1,3 +1,3 @@
-# gb-kefrens-bars
+# some-bars
 
 ![](screenshot.png)
