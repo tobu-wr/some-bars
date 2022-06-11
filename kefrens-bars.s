@@ -1,4 +1,21 @@
-.include "../common.s"
+.gbheader
+	nintendologo
+.endgb
+
+.memorymap
+	slotsize $4000
+	defaultslot 0
+	slot 0 $0000
+.endme
+
+.rombanksize $4000
+.rombanks 2
+
+.define stat_address $ff41
+.define scy_address $ff42
+.define ly_address $ff44
+.define bgp_address $ff47
+.define ie_address $ffff
 
 .macro set_pixel0 args tile_address
 	ld hl,tile_address
@@ -124,11 +141,20 @@
 .org $0048
 	jp hblank
 
+.org $0100
+	nop
+	jp start
+
 .org $0150
-	wait_next_vblank
+start:
+	; wait for ly = 144 (beginning of vblank)
+-	ldh a,(<ly_address)
+	cp $90
+	jr nz,-
 
 	; init background palette
-	set_register bgp_address $93
+	ld a,$93
+	ldh (<bgp_address),a
 
 	; init background code area
 	ld hl,$9800
@@ -139,8 +165,10 @@
 		jr nz,-
 
 	; enable hblank and vblank interrupts
-	set_register stat_address $08
-	set_register ie_address $03
+	ld a,$08
+	ldh (<stat_address),a
+	ld a,$03
+	ldh (<ie_address),a  
 	ei
 
 	; prepare first hblank jump
@@ -151,7 +179,8 @@ main_loop:
 
 vblank:
 	; reset scy register
-	reset_register scy_address
+	xor a
+	ldh (<scy_address),a
 
 	; clean first pixel line
 	ld hl,$8000
